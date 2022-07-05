@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+{% load staticfiles %}
+{% load static %}
+
+<title>AMI - pogonski proračun</title>
+{% load static %}
+<meta name="viewport" content = "width=device-width, initial-scale=1.0">
+<script src="{% static 'personal/skripte/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'personal/skripte/jquery.mask.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'personal/style.css' %}" type = "text/css"/>
+<script src="{% static 'personal/skripte/Chart.js' %}"></script>
+<script src="{% static 'personal/skripte/skripte_novo.js' %}"></script> 
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid">
+
+<div class="row">
+												
+
+<div class="col-md-9"> 
+<h2>15-minutne maksimalne vrijednosti DIE</h2>
+<canvas id="line-chart"></canvas>
+<script>   <!-- linijski graf OPTEREĆENJA HRVATSKE -->
+
+
+	
+
+	var ami_vrj = [];
+	{%for redak in df_15_min %}
+	ami_vrj.push("{{redak.3}}");
+	{%endfor%}
+	var vrijeme = [];
+	{%for redak in df_15_min %}
+	vrijeme.push("{{redak.4}}");
+	{%endfor%}
+
+
+
+
+new Chart(document.getElementById("line-chart"), {
+type: 'line',
+data: {
+labels: vrijeme,
+datasets: [
+
+{ data: ami_vrj,
+	label: "Ukupno DIE DP",
+	borderColor: "#3e95cd",
+	fill: false
+}
+
+]
+},
+options: {
+
+scales: {
+      yAxes: [{
+        id: 'A',
+        type: 'linear',
+        position: 'left',
+		scaleLabel: {
+        display: true,
+        labelString: 'MW',
+		fontSize: 16
+      }
+      }]
+    }
+	,
+	
+responsive:true,
+legend: {
+display: true
+},
+
+title: {
+display: false,
+text: 'Mjerenje'
+}
+}
+});
+
+
+</script>
+
+
+<footer class="w3-container ">
+<b>
+{{statistika_html.1.2}}={{statistika_html.1.1}} &nbsp;&nbsp;&nbsp;
+{{statistika_html.0.2}}={{statistika_html.0.1}} &nbsp;&nbsp;&nbsp;
+
+{{statistika_html.2.2}}={{statistika_html.2.1}} &nbsp;&nbsp;&nbsp;
+{{statistika_html.3.2}}={{statistika_html.3.1}} &nbsp;&nbsp;&nbsp;
+{{statistika_html.7.2}}={{statistika_html.7.1}} &nbsp;&nbsp;&nbsp;
+</b>
+
+</footer>
+</div>
+
+
+
+<div class="col-md-3"> 
+<h2>Dnevni makimumi snage DIE DP-a</h2>
+<table class="table table-striped table-dark">
+<thead>
+<tr >
+
+
+<th class="th-sm"  class="text-right"  >Datum</th>
+<th class="th-sm" class="text-right"  >Pmax [MW]</th>
+
+</tr>
+</thead>
+<tbody>
+
+{% for i in uk_dp_df  %}
+<tr >
+
+ <td>{{i.0}}</td> 
+ <td>{{i.1}}</td>
+
+ </tr>
+{% endfor %}
+
+</tbody>
+</table>
+</div>
+
+
+</div>
+</div>
+
+
+
+<div class="col-md-12"> 
+<h2>Dnevni makimumi snage pojedine Elektrane u DP-u</h2>
+<div class="form-group">  
+
+ <input class="form-control" type="text" id="myInput1" onkeyup="myFunction1()" placeholder="Pronađi elektranu">
+  
+</div>
+<table id="elektrane" class="table table-striped table-dark">
+<thead>
+<tr class="table-primary">
+
+<th class="th-sm" >Naziv elektrane</th>
+<th class="th-sm"  class="text-right" >Datum</th>
+<th class="th-sm" class="text-right"  >ID</th>
+<th class="th-sm" class="text-right"  >Pmax [MW]</th>
+
+</tr>
+</thead>
+<tbody>
+
+{% for i in elektrane_uk  %}
+<tr class="table-primary">
+
+ <td>{{i.0}}</td> 
+ <td>{{i.1}}</td>
+ <td >{{i.2}}</td> 
+ <td >{{i.3}}</td>
+ </tr>
+{% endfor %}
+
+</tbody>
+</table>
+
+</div>
+
+
+ 	<script>
+			function myFunction1() {
+			   
+			  var input, filter, table, tr, td, i;
+			  input = document.getElementById("myInput1");
+			  filter = input.value.toUpperCase();
+			  table = document.getElementById("elektrane");
+			  tr = table.getElementsByTagName("tr");
+
+			  
+			  for (i = 0; i < tr.length; i++) {
+				td = tr[i].getElementsByTagName("td")[0];
+				if (td) {
+				  if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+					tr[i].style.display = "";
+				  } else {
+					tr[i].style.display = "none";
+				  }
+				} 
+			  }
+			}
+	</script>
+</body>
+</html>

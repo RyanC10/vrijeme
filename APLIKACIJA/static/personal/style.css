@@ -1,0 +1,28 @@
+
+
+	.jumbotron {
+  
+  display: flex;
+  position: relative;
+  background-image: url("/static/personal/img/serveri.jpg");
+  background-size: cover;
+  color: #FFFFFF;
+  height: 500px;
+  text-shadow: gray 0.5em 0.5em 0.5em;
+  font-size: 50px;
+}
+
+
+
+  .asap-font{
+				 text-align: center;
+				 font-size: 45px;
+				 font-weight: bold;
+				 text-align: center;
+				 text-shadow: gray 0.5em 0.5em 0.5em;
+					
+				} 
+		
+#panel {
+  display: none;
+}
